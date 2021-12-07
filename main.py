@@ -8,18 +8,30 @@ def computeCharEntropy(contents, rank: int = 0) -> float:
     :param rank: rank of the entropy, i.e. on how many other characters this one depends
     """
     count = dict()  # counts of occurrence of all different rank-grams in the text
+    count1 = dict()  # same as above, but excluding the last character - i.e. count of all rank+1 grams
 
     # "- rank" due to first chars being cut out (not enough prior chars)
     # todo - exclude spaces and numbers?
     for char_idx in reversed(range(len(contents) - rank)):
-        n_gram = ""
-        for shift in reversed(range(rank+1)):
-            n_gram += contents[char_idx - shift]
+        n1_gram = ""
+        for shift in reversed(range(1, rank+1)):
+            n1_gram += contents[char_idx - shift]
+        n_gram = n1_gram + contents[char_idx]
         if n_gram in count:
             count[n_gram] = count[n_gram] + 1
         else:
             count[n_gram] = 1
-    print(count)
+        if n1_gram in count1:
+            count1[n1_gram] = count1[n1_gram] + 1
+        else:
+            count1[n1_gram] = 1
+    print("(chars)")
+    for item in count1:
+        print("count1 of \"{}\": {}".format(item, count1[item]))
+        break
+    for item in count:
+        print("count of \"{}\": {}".format(item, count[item]))
+        break
 
     return 0.0  # todo
 
@@ -32,18 +44,30 @@ def computeWordEntropy(separated_contents, rank: int = 0) -> float:
     :param rank: rank of the entropy, i.e. on how many other words this one depends
     """
     count = dict()  # counts of occurrence of all different words combinations of length rank+1 in the text
+    count1 = dict()  # same as above, but excluding the last word - i.e. count of all word combinations of size rank
 
     # "- rank" due to first chars being cut out (not enough prior chars)
     for word_idx in reversed(range(len(separated_contents) - rank)):
-        comb = ""
-        for shift in reversed(range(rank+1)):
-            comb += separated_contents[word_idx - shift]
-            comb += "-"
+        comb1 = ""
+        for shift in reversed(range(1, rank+1)):
+            comb1 += separated_contents[word_idx - shift]
+            comb1 += "-"
+        comb = comb1 + separated_contents[word_idx]
         if comb in count:
             count[comb] = count[comb] + 1
         else:
             count[comb] = 1
-    print(count)
+        if comb1 in count1:
+            count1[comb1] += 1
+        else:
+            count1[comb1] = 1
+    print("words")
+    for item in count1:
+        print("count1 of \"{}\": {}".format(item, count1[item]))
+        break
+    for item in count:
+        print("count of \"{}\": {}".format(item, count[item]))
+        break
 
     return 0.0  # todo
 
