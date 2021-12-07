@@ -9,6 +9,8 @@ def computeCharEntropy(contents, rank: int = 0) -> float:
     """
     count = dict()  # counts of occurrence of all different rank-grams in the text
     count1 = dict()  # same as above, but excluding the last character - i.e. count of all rank+1 grams
+    # todo - it might be wiser to run this for the biggest rank, as lower ranks can be calculated based on calculations
+    #  needed for it
 
     # "- rank" due to first chars being cut out (not enough prior chars)
     # todo - exclude spaces and numbers?
