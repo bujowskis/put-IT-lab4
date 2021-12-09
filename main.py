@@ -1,13 +1,15 @@
-
+import numpy as np
 
 def computeCharEntropy(contents, ranks: int = 4) -> list:
     """
     Computes characters entropy of given rank in provided text file
 
     :param contents: contents of a text file to be analyzed, as a single string
-    :param ranks: highest rank of the entropy to be computed, i.e. on how many other words this one depends
+    :param ranks: highest rank of the entropy to be computed, i.e. on how many other words this one depends on
     """
-    chars_count = [dict() for i in range(ranks+1)]  # list index corresponds to how many prior chars depends on
+    # dynamically count all occurrences of grams of size ranks+1 working forwards
+    #   i.e. count 1-gram, count 2-gram and so on
+    chars_count = [dict() for i in range(ranks+1)]  # index corresponds to how many previous chars it depends on
     chars_total = 0
 
     # "-ranks" due to first chars being cut out (not enough prior chars for conditional Entropy)
@@ -23,12 +25,24 @@ def computeCharEntropy(contents, ranks: int = 4) -> list:
                 chars_count[count_idx][gram] = 1
             count_idx += 1
 
-    print("(chars)")
-    for di in chars_count:
-        print(di)
-        print("\n")
+    # calculate the entropy
+    entropy = [0.0 for i in range(ranks+1)]
 
-    return []  # todo - return list of entropy
+    # "based-on-0" is unique, as it doesn't depend on any previous chars
+    for item in chars_count[0]:
+        entropy[0] += chars_count[0][item]/chars_total * np.log2(chars_total/chars_count[0][item])  # inverted prob
+
+    # i is the rank index
+    for i in range(1, ranks+1):
+        prev_key = None
+        for item in chars_count[i]:
+            if not prev_key:
+                prev_key = item[:-1]  # get the key to the "one rank above" count
+            entropy[i] += chars_count[i][item]/chars_total * np.log2(chars_count[i-1][prev_key]/chars_count[i][item])
+
+    print(entropy)
+
+    return entropy  # todo - return list of entropy / export plot from here
 
 
 def computeWordEntropy(separated_contents, ranks: int = 4) -> list:
@@ -36,7 +50,7 @@ def computeWordEntropy(separated_contents, ranks: int = 4) -> list:
     Computes words entropy of given rank in provided text file
 
     :param separated_contents: separated contents of a text file to be analyzed, as a list
-    :param ranks: highest rank of the entropy to be computed, i.e. on how many other words this one depends
+    :param ranks: highest rank of the entropy to be computed, i.e. on how many other words this one depends on
     """
     count = dict()  # counts of occurrence of all different words combinations of length rank+1 in the text
     count1 = dict()  # same as above, but excluding the last word - i.e. count of all word combinations of size rank
@@ -94,4 +108,4 @@ def computeEntropies(filepath, do_char: bool = True, do_word: bool = True, ranks
 
 
 # main program
-computeEntropies("text-files/norm_wiki_en.txt", do_char=True, do_word=False, ranks=2)
+computeEntropies("text-files/norm_wiki_en.txt", do_char=True, do_word=False, ranks=4)
