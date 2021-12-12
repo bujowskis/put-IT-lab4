@@ -41,7 +41,7 @@ def computeCharEntropy(contents, ranks: int = 4) -> list:
             entropy[i] += chars_count[i][item] / chars_total * np.log2(
                 chars_count[i - 1][prev_key] / chars_count[i][item])
 
-    print(entropy)  # todo - remove once done testing
+    print(entropy)
     return entropy
 
 
@@ -70,15 +70,27 @@ def computeWordEntropy(separated_contents, ranks: int = 4) -> list:
                 words_count[count_idx][comb] = 1
             count_idx += 1
 
-    for di in words_count:
-        i = 0
-        for word in di:
-            print(word)
-            i += 1
-            if i == 5:
-                break
+    # calculate the entropy
+    entropy = [0.0 for i in range(ranks + 1)]
 
-    return []  # todo - return list of entropy
+    # "based-on-0" is unique, as it doesn't depend on any previous words
+    for item in words_count[0]:
+        entropy[0] += words_count[0][item] / words_total * np.log2(words_total / words_count[0][item])  # inverted prob
+
+    # i is the rank index
+    for i in range(1, ranks + 1):
+        for item in words_count[i]:
+            # remove the last word
+            item_split = item.split("-")
+            prev_key = ""
+            for j in range(len(item_split) - 2):
+                prev_key += item_split[j] + "-"
+
+            entropy[i] += words_count[i][item] / words_total * np.log2(
+                words_count[i - 1][prev_key] / words_count[i][item])
+
+    print(entropy)
+    return entropy
 
 
 def computeEntropies(filepaths, png_name, do_char: bool = True, do_word: bool = True, ranks: int = 4):
@@ -95,9 +107,12 @@ def computeEntropies(filepaths, png_name, do_char: bool = True, do_word: bool = 
         print("No char and no word entropy wanted -> no output")
         return
 
+    print("running computations for \"{}\"".format(png_name))
     x = [i for i in range(ranks + 1)]
     if do_char:
+        print("(computing char entropy)")
         for filepath in filepaths:
+            print("\tcurrent file: {}".format(filepath))
             with open(filepath, 'r') as file:
                 contents = file.readline()  # as everything's in one row
             label_text = filepath.split("/")
@@ -109,9 +124,12 @@ def computeEntropies(filepaths, png_name, do_char: bool = True, do_word: bool = 
         plt.ylabel("conditional entropy value")
         plt.savefig(png_name + "-char.png")
         plt.close()
+        print("done\n")
 
     if do_word:
+        print("(computing word entropy)")
         for filepath in filepaths:
+            print("\tcurrent file: {}".format(filepath))
             with open(filepath, 'r') as file:
                 contents = file.readline().split()
             label_text = filepath.split("/")
@@ -123,10 +141,14 @@ def computeEntropies(filepaths, png_name, do_char: bool = True, do_word: bool = 
         plt.ylabel("conditional entropy value")
         plt.savefig(png_name + "-word.png")
         plt.close()
+        print("done\n")
 
 
 # main program
-norm_filepaths = ["text-files/norm_wiki_en.txt", "text-files/norm_wiki_eo.txt"]
-computeEntropies(norm_filepaths, "norm", do_char=False, do_word=True, ranks=5)
-sample_filepaths = ["text-files/sample0.txt", "text-files/sample1.txt"]
-computeEntropies(sample_filepaths, "sample", do_char=False, do_word=True, ranks=5)
+norm_filepaths = ["text-files/norm_wiki_en.txt", "text-files/norm_wiki_eo.txt", "text-files/norm_wiki_et.txt",
+                  "text-files/norm_wiki_ht.txt", "text-files/norm_wiki_la.txt", "text-files/norm_wiki_nv.txt",
+                  "text-files/norm_wiki_so.txt"]
+computeEntropies(norm_filepaths, "norm", do_char=True, do_word=True, ranks=5)
+sample_filepaths = ["text-files/sample0.txt", "text-files/sample1.txt", "text-files/sample2.txt",
+                    "text-files/sample3.txt", "text-files/sample4.txt", "text-files/sample5.txt"]
+computeEntropies(sample_filepaths, "sample", do_char=True, do_word=True, ranks=5)
