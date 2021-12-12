@@ -122,6 +122,7 @@ def computeEntropies(filepaths, png_name, do_char: bool = True, do_word: bool = 
         plt.title("Con.Ent./Con.Ent.Order - Char")
         plt.xlabel("conditional entropy order")
         plt.ylabel("conditional entropy value (in bits)")
+        plt.yticks(np.arange(0.0, 5.0, 0.5))  # note - hardcoded after seeing values, to make comparison easier
         plt.savefig(png_name + "-char.png")
         plt.close()
         print("done\n")
@@ -139,6 +140,7 @@ def computeEntropies(filepaths, png_name, do_char: bool = True, do_word: bool = 
         plt.title("Con.Ent./Con.Ent.Order - Word")
         plt.xlabel("conditional entropy order")
         plt.ylabel("conditional entropy value (in bits)")
+        plt.yticks(np.arange(0.0, 20.0, 2.5))  # note - hardcoded after seeing values, to make comparison easier
         plt.savefig(png_name + "-word.png")
         plt.close()
         print("done\n")
