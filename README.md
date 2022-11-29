@@ -1,6 +1,25 @@
 # put-IT-lab4
 Detecting natural languages using conditional entropy analysis - Repository for PUT's Information Theory lab4 assignment
 
+## Simple, approachable description
+If we received a signal - a "message" - from outer space, how would we know it is, in fact, a message in some alien language? One of the best methods we could use is `conditional entropy analysis`.
+
+For virtually all natural languages (not only in humans but also in animal communication), some words/characters occur more often after one another. For example:
+- after the words "do you", the next word is likely going to be "like" (as in "do you like"), while it's unlikely to be "you" (as in "do you you")
+- after the characters "do you like it", the next character is likely going to be "?" (as in "do you like it?"), while it's unlikely to be "z" (as in "do you like itx")
+
+This likelihood produces a common pattern seen in virtually all natural languages - animal, human, from the past, modern ones - you name it.
+
+The main takeaway is - ***natural languages are quite predictable*** - the more previous words/characters we take into account, the more predictable the next ones are.
+
+`Entropy` put simply, is a measure of chaos and uncertainty. When entropy equals 0, something is fully predictable. The bigger the entropy, the more chaotic and unpredictable something is.
+
+`Conditional entropy` is used to determine if (and by how much) something becomes less chaotic (i.e. more predictable) when taking into account some factors.
+
+Subtract Entropy from Conditional Entropy and you get `Information Gain` - the measure of how much information taking into account a given factor brings you.
+
+Coming back to the problem - we can apply conditional entropy analysis to the received message and check if the pattern common in natural languages occurs (natural language? aliens?) or not.
+
 ## General description
 For "behind the scenes", please see `lab4-description.pdf`. Basically, the idea is, it's true that for natural
 languages, due to some characters and/or words occurring more often one after another, as we take more and more prior
