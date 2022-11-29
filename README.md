@@ -1,5 +1,5 @@
 # put-IT-lab4
-Repository for PUT's Information Theory lab4 assignment - Conditional entropy of natural languages
+Detecting natural languages using conditional entropy analysis - Repository for PUT's Information Theory lab4 assignment
 
 ## General description
 For "behind the scenes", please see `lab4-description.pdf`. Basically, the idea is, it's true that for natural
